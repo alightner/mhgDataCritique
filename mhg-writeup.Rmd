@@ -1,5 +1,5 @@
 ---
-title: \textbf{Moralizing high gods in cross-cultural datasets systematically underestimate the evidence for supernatural punishment}
+title: \textbf{Cross-cultural datasets systematically underestimate the evidence for supernatural punishment in small-scale societies}
 author: Indigenous Religions Lab, feat. Ryan McKay
 numbersections: true
 output:
