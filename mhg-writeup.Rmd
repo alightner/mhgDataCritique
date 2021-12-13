@@ -1,0 +1,202 @@
+---
+title: "Moralizing high gods in cross-cultural datasets systematically underestimate the evidence for supernatural punishment"
+author: Indigenous Religions Lab, feat. Ryan McKay
+numbersections: true
+output:
+  bookdown::pdf_document2:
+    toc: false
+    keep_tex: true
+abstract: |
+  Many have theorized from cross-cultural and evolutionary perspectives about the interacting roles between punitive, moralizing gods and social complexity. The premise of this theorizing assumes a positive association between the presence of moralizing gods and high levels of social complexity. An influential source of evidence for this premise is the Standard Cross-Cultural Sample (SCCS), specifically with its moralizing \emph{high god} variable as the outcome of interest. In this paper, we discuss how the high god variable is coded. We then show why, based on this coding criteria, the SCCS systematically underestimates our outcome of interest (whether a punitive, moralizing god is present in a given culture) because it filters cases based on a theoretically irrelevant criterion (whether a god is a creator deity, regardless of its power or omniscience). Based on existing evidence that \emph{does} include both moralizing gods and moralizing \emph{high} gods, we then show that this problem of false negatives in the ethnographic record is not randomly distributed across levels of social complexity. Instead, these false negatives are likely biased in a way that favors more false negatives at lower levels of social complexity, favoring a spurious positive association between presence of moralizing gods and social complexity. We then argue that this apparent bias is likely strengthened by the historical context in which the data were generated in this first place. We therefore question the premise that punitive, moralizing gods are positively associated with high social complexity, and argue that the currently available sources of cross-cultural data tend to underestimate the prevalence of moralizing gods in small-scale societies.
+  
+
+bibliography: "references/refs.bib"
+csl: "references/asa.csl"
+---
+
+```{r setup, echo=FALSE, warning=FALSE, message=FALSE}
+knitr::opts_chunk$set(echo=FALSE, warning=FALSE, message=FALSE)
+#knitr::opts_chunk$set(fig.pos = 'p') # Places figures on their own pages
+knitr::opts_chunk$set(dpi=600) # Figure resolution and size
+knitr::opts_chunk$set(fig.env="figure") # Latex figure environment
+knitr::opts_chunk$set(dev = "cairo_pdf")
+```
+
+
+\section{Introduction}
+
+```{r}
+source('analysis.R')
+```
+
+Many have theorized, from cross-cultural and evolutionary perspectives, about how moralizing and punitive \emph{Big Gods} relate to social complexity. A popular working narrative, which we refer to as the \emph{Big Gods narrative}, often goes as follows. During most of our evolutionary history, humans followed animistic religious traditions, anthropomorphizing their social and natural worlds with spirits, demons, and witches. Echoing late-nineteenth and early-twentieth century theories of animistic religions among small-scale societies [@tylorPrimitiveCultureResearches1871], these "ancestral religions did not have a clear moral dimension" [@norenzayanBigGodsHow2015, p. 127]. In the past 12,000 years or so, however, people started to believe in so-called \emph{Big Gods}: powerful deities who monitor human behavior, care about upholding moral rules, and punish rule violators [@norenzayanBigGodsHow2015; @norenzayanCulturalEvolutionProsocial2016; @jacksonTightCulturesVengeful2021]. Whereas gods in modern small-scale and prehistorical societies tend to be "weak, whimsical, and not particularly moral" (Henrich 2020), morally concerned "super-punishers" are associated with complex, large-scale societies because they motivate an expansion of cooperation that kin selection and reciprocity cannot sustain [@henrichOriginsPsychologyHuman2021, p. 24; see also @norenzayanCulturalEvolutionProsocial2016]. Hence, the Big Gods narrative implies a positive association between the presence of moralizing, punitive gods and social complexity.
+
+Many studies supplying the anthropological evidence for a positive association between moralizing supernatural punishers have done so with the Standard Cross-Cultural Sample (SCCS), a cross-cultural survey of 186 societies [e.g., @johnsonGodPunishmentPublic2005; @norenzayanCulturalEvolutionProsocial2016; @roesBeliefMoralizingGods2003; @snareyNaturalEnvironmentImpact1996].\footnote{Anthropology is a field that has been motivated to understand humans in the broadest sense for more than a century, and the usefulness of this dataset for doing so should not be underestimated. We therefore caution against viewing our critical discussion as a general critique of the SCCS, although a fair amount of skepticism of its results is always warranted -- as we will demonstrate in this paper.} In the SCCS, there is one variable, V237, that measures the presence vs. absence of moralizing \emph{high gods} (MHGs) and a handful of variables that measure social complexity (e.g., V238, which is the number of jurisdictional hierarchies). To use a widely circulated example, there are 167 societies with complete data on V237 (presence/absence of MHGs) and V238 (number of jurisdictional hierarchies), and the proportion of MHGs present generally increases at each level of jurisdictional hierarchies (figure \@ref(fig:standardSCCS)). The SCCS is not the only source of cross-cultural data available on social complexity and moralizing high gods. Indeed, the coding criteria for the MHG variable is identical to the one in @swansonBirthGods1964, which examines moralizing gods and social complexity among 60 societies [see also @peregrineBirthGodsRevisited1996]. Swanson's dataset, like the SCCS, shows a similar association between MHGs and social complexity (figure \@ref(fig:mhgPlot)).
+
+```{r standardSCCS, fig.cap='Proportion of MHGs in each level of social complexity, as measured by the number of jurisdictional hierarchies, among 167 cultures in the SCCS. Note that this is from the latest version of the SCCS, available at D-PLACE, and it differs slightly when compared to the key results in other works, such as Roes and Raymond (2003).', fig.height=3, fig.width=5}
+standardMHGplot
+```
+
+```{r mhgPlot, fig.cap='Logistic regression models showing an increased probability of a MHG present (y-axis) along increasing levels of social complexity, measured by the number of jurisdictional hierarchies (x-axis). Model results are based on coded data among cultures in the SCCS (panel A) and in the Swanson dataset (panel B).', fig.width=10}
+sccs_highPlot + (swan_highPlot + ggtitle('Swanson (1964) dataset')) +
+  theme(
+    axis.text.y=element_blank(),
+    axis.ticks.y =element_blank(),
+    axis.title.y = element_blank()
+  ) +
+  plot_annotation(tag_levels = 'A')
+```
+
+The observation that MHGs and social complexity levels are positively associated in the cross-cultural data has provided much of the fuel for the Big Gods narrative. Indeed, when discussing the anthropological evidence for the Big Gods narrative, the Big Gods term is frequently used as a convenient and interchangeable shorthand for the MHGs in the SCCS [e.g., sect. 3 in @norenzayanCulturalEvolutionProsocial2016]. The problem with using MHGs and Big Gods interchangeably, however, is that the MHG variable is restrictively defined in a way that leads to a high false negative rate when attempting to detect the presence of moralizing gods. (As we will discuss further below, by \emph{false negatives} we mean an inference that incorrectly attributes the absence of a characteristic of interest that is truly present.)
+
+\section{Moralizing gods, moralizing high gods: What's the difference?}
+
+In a classic paper that helped shape the Big Gods narrative, @roesBeliefMoralizingGods2003 investigated MHGs in the SCCS as a measure of what they refer to as \emph{moralizing gods}. Their concept of moralizing gods (MGs) is broadly characterized by supernatural punishment, resembling the Big Gods concept: they are gods who "tell people what they should and should not do" (p. 127), "induce society members to cooperate with one another," and "impose [their moral rules] with authority" (p. 135). These MGs (and subsequently, Big Gods) are, in other words, a theoretical construct that MHGs are meant to measure in the cross-cultural and ethnographic data.
+
+Hence, we have three loosely connected terms to work with in our analysis: Big Gods, moralizing gods (MGs), and moralizing high gods (MHGs). It is perhaps intuitive to refer to these terms interchangeably, because Big Gods and MHGs seem, in many ways, like prototypical representations of a deity such as the Christian God: "a single, all-powerful creator" that is actively concerned about human morality [@peoplesSubsistenceEvolutionReligion2012, p. 253].
+
+It is not obvious, however, that MHGs are theoretically relevant to Big Gods or its closely related concept of broadly moralizing gods (MGs), because \emph{high} gods are distinguished from all other gods by their status as a \emph{creator} deity. The \emph{high god} variable, both in the SCCS and in Swanson (1964), is defined as "a spiritual being who is believed to have created all reality and/or to be its ultimate governor," and "includes spirits whose sole act was to create the other spirits who, in turn, produced the natural world" (p. 210). Non-missing data in the high gods variable can take on one of four categorical values: (1) \emph{absent}, (2) \emph{otiose}, (3) \emph{active, but not supporting morality}, and (4) \emph{active, supporting morality} [@kirbyDPLACEGlobalDatabase2016; @murdockStandardCrossCulturalSample2006; @swansonBirthGods1964].
+
+We can therefore represent the coding decisions for presence vs. absence of MHGs as a two-step decision tree: First, did a god create all of reality and/or control the natural world? Second, and given that a god met the first condition, does that god care about morality? A society is coded as having a MHG present if, and only if, both of these criteria are met.
+
+MGs who mete out supernatural punishment are a theoretical construct that MHGs are meant to measure. While the theoretical relevance of the second criterion to supernatural punishment is clear, the relevance of the first criterion, which filters \emph{all cases that can be considered for the second criterion}, is not clearly relevant to supernatural punishment.\footnote{As we will discuss further, its similarity to the Christian God might even reflect the historical contexts that shaped the discourse around moralizing gods in the twentieth century (see also Purzycki and McKay, forthcoming).} This way of defining MHGs as a subset of creator MGs seems to clash with popular uses of the Big Gods concept, which seems more akin to a broadly punitive MG concept that MHGs are meant to measure. (Notice, for example, that the criteria for MHGs do not include criteria such as omniscience or a wide scope of gods' concerns, which are sometimes used to differentiate Big Gods from weak and whimsical gods.)
+
+\subsection{Detecting moralizing gods in the ethnographic record: A problem of false negatives}
+
+This is not simply an academic quibble about definitions; these differences in definitions have real consequences on the cross-cultural data that has shaped the Big Gods narrative and subsequent discussions [e.g., @beheimCorrectedAnalysesShow2019; @whitehouseBigGodsDid2021]. Even if we assumed that every ethnographer was perfectly reliable in his or her interpretation of a cultural institution,\footnote{This is, of course, not a safe assumption, and we will directly addess this further below.} the arbitrary filtering criteria that sits at the first step of coding presence/absence of MHGs -- does a culture have a creator deity? -- is bound to systematically generate false negatives in our cross-cultural data by excluding MGs who are not creator deities. If a culture has a punitive MG who motivates cooperation, but that MG neither created the world nor governs its everyday occurrences, then that culture's MHG data point is coded as "absent."
+
+To illustrate, consider the following account of the Orokaiva (Schwimmer 1973):
+
+> If the Orokaiva, by and large, order their lives by the same moral principles, they would explain this by their common belief in certain demigods whom they all regard as their ancestors and as sources of authority, and who created certain institutions embodying moral norms to which they all subscribe. Not only do they obey the precepts of these demi-gods, they also re-enact their feats in ritual and identify with them during ceremonies, and in many of their regular expressive activities (p. 51).
+
+The Orokaiva appear to attribute their moral order to these demi-gods, who are both authoritative and responsible for institutions with moral significance. Nevertheless, the Orokaiva are coded, both in the SCCS and in Swanson's data, as lacking a MHG.\footnote{While it is not immediately relevant to our point in this section, it is worth pointing out that the Orokaiva are also coded as having one jurisdictional hierarchy, i.e., on the low complexity end of the V238 variable.} This might be technically true, but they do not lack MGs. Indeed, while Swanson (like the SCCS) codes the Orokaiva as lacking a high god (and hence, lacking a MHG), he also codes them as having moralistic supernatural sanctions present.\footnote{These variables, which can be coded as present vs. absent, are specifically \emph{Active Ancestral Spirits}: Present -- aid or punish living humans, \emph{Supernatural Sanctions for Morality -- Effects on Health}, \emph{Supernatural Sanctions for Morality -- Effects on Experiences in the Afterlife}, and \emph{Supernatural Sanctions for Morality -- Other Effects}. The ``other effects'' in the last variable includes accidents and misfortunes, such as crop failure. See Swanson 1964, p. 211-213.}
+
+A better (and more theoretically relevant) alternative would be a variable that is more broadly based on MGs, who can, like Big Gods, motivate moral behaviors through supernatural punishment threats [@johnsonGodWatchingYou2015; @schlossEvolutionaryAccountsBelief2011; @singhSmallGodsRituals2021; @wattsBroadSupernaturalPunishment2015] and/or form the basis of supernatural appeals [@bendixenPeeringMindsGods2020; @fitouchiSupernaturalPunishmentBeliefs2021]. Comparing the prevalence of MGs based on this criteria vs. MHGs, when the data are available, would allow us to begin roughly assessing how severe of a false negative problem this coding criteria actually creates. The SCCS unfortunately lacks an alternative variable on MGs -- a practical reason to use MHGs to measure presence/absence of MGs in the first place. However, in addition to the high gods variable, Swanson's data includes multiple variables on supernatural punishment based on moral concerns, which are not constrained by the high god's filtering criteria.
+
+\subsection{Estimating the impact of false negatives from an existing dataset}
+
+A broad pass at the literature can give us a hint about how much more common MGs are than the prevalence of MHGs would seem to suggest. Consider, for example, some recent cross-cultural datasets that include broader coding criteria for MGs [e.g., @boehm2008biocultural; @peoplesHunterGatherersOriginsReligion2016; @skoggard2020resource; @wattsBroadSupernaturalPunishment2015; @whitehouseBigGodsDid2021]. Collectively, these datasets, many of which include MGs and MHGs as separate variables, suggest that that MGs are quite common and MHGs are not (figure \@ref(fig:comparedatasets)). In other words, the problem of correctly detecting MGs by measuring MHGs is a general problem of misclassification of a binary outcome, a general problem for signal detection in presence/absence data that is especially common in epidemiology [@duffy2004simple; @edwards2013accounting]. In this case, we want to detect the presence of an MG, and we generate false negatives when doing so by measuring MHGs.
+
+```{r comparedatasets, fig.cap='Proportion of MHGs present (open points) vs. MGs present (closed points) in a sample of datasets that either include MHGs, MGs, or both. Error bars are bootstrapped 95\\% CIs.', fig.height=4, fig.width=9}
+compare_dataplot
+```
+
+Many of these datasets in figure \@ref(fig:comparedatasets) were also interested in social complexity, possibly allowing us to re-evaluate whether or not MGs are positively associated with levels of social complexity. However, most of them were either complicated by different levels of uncertainty over time [@whitehouseBigGodsDid2021] or are restricted to a single subsistence strategy [@boehm2008biocultural; @peoplesHunterGatherersOriginsReligion2016], a single domain of supernatural punishment, such as weather [@skoggard2020resource], or a narrow region of interest [@wattsBroadSupernaturalPunishment2015]. Of the available datasets in figure \@ref(fig:comparedatasets), the dataset in Swanson (1964) is our best available reference for making a simple, straightforward and cross-cultural assessment about how the documented prevalence of MHGs differs from the documented prevalence of MGs along different levels of social complexity.
+
+When we group the cultures from Swanson's dataset by social complexity level\footnote{We refer to this variable as jurisdictional levels for consistency, but here and in the figures above, the Swanson dataset measures social complexity with the \emph{number of sovereign organizations} variable. This is similar to the jurisdictional levels variable (V238) in the SCCS, but is coded with up to six, rather than five, organizations. We focus on jurisdictional levels instead of population size because, as discussed in the Introduction, this variable is commonly used in the literature to measure social complexity.} and count up the number of MGs vs. MHGs present vs. absent, we see that many MHGs are absent among lower complexity levels -- consistent with the idea that higher social complexity is associated with MHGs. Many MGs are present among lower complexity levels, however, and proportional to the number of cultures sampled at each level of complexity, MGs appear to be generally widespread (figure \@ref(fig:compareSwanson)). Moreover, when we compare logistic regression models of the presence of MHGs as an outcome of social complexity (as shown in figure \@ref(fig:mhgPlot)) vs. MGs as the outcome, we see that in the Swanson dataset, our weak positive association between MHGs and social complexity does not apply to MGs as an outcome of social complexity (figure \@ref(fig:compareSwansonMods)).
+
+```{r compareSwanson, fig.width=9, fig.cap='Number of MGs (left panel) and MHGs (right panel) that are coded as present vs. absent in the Swanson (1964) dataset, where presence vs. absence is assessed at the culture level. Cultures are grouped by jurisdictional levels, a proxy measure of social complexity (x-axis).'}
+
+swanson_plot_JurisCounts
+
+
+```
+
+```{r compareSwansonMods, fig.width=9, fig.cap='Logistic regression models showing the probability of a god present at the culture level (y-axis) as a function of social complexity, measured by the number of jurisdictional hierarchies (x-axis). A: When the god of interest is a MHG, we replicate the positive association with social complexity, discussed in the Introduction. B: When the god of interest is a MG, we see a higher prevalence of gods present and little-to-no association with social complexity.'}
+(swan_highPlot + ggtitle('Moralizing High Gods')) +
+  (swan_moralPlot + ggtitle('Moralizing Gods')) +
+  theme(
+    axis.text.y=element_blank(),
+    axis.ticks.y =element_blank(),
+    axis.title.y = element_blank()
+  ) +
+  plot_annotation(tag_levels = 'A')
+```
+
+Whereas figure \@ref(fig:comparedatasets) shows that the use of MHGs to detect MGs creates many false negatives in the cross-cultural data, figures \@ref(fig:compareSwanson) and \@ref(fig:compareSwansonMods) suggest that those false negatives are not evenly distributed along levels of social complexity. Among cultures with lower levels of social complexity, there are many more claims of MHGs absent that are accompanied by cases of MGs present compared to the cultures with higher levels of social complexity. Put differently, the \emph{sensitivity} -- the true positive rate, or proportion of MGs correctly detected -- is biased, such that it increases with higher levels of social complexity (and, conversely, decreases with lower levels of social complexity).
+
+We can create a simple model of this biased sensitivity, $S$, as a function of social complexity level, $SC$, where $\text{logit}(S) = \alpha + \beta \times SC$. Here, $\alpha$ is the intercept and $\beta$ is the bias estimate along social complexity levels [see also @beesleyStatisticalInferenceAssociation2019]. If $\beta>0$, then the probability of correctly detecting a MG when one is present ($S$) increases as social complexity ($SC$) increases.
+
+This biased sensitivity in our ability to detect MGs will clearly, to some extent, favor a positive association between MGs and social complexity. We approximate the extent to which this positive association is favored by estimating the parameters $\alpha$ and $\beta$ in the biased sensitivity model our available observations of MGs and MHGs along levels of social complexity. We do this using a bootstrap from Swanson's MHG and MG variables ($N=10\,000$), which shows the distribution of our estimates of $\alpha$ and $\beta$ in figure \@ref(fig:swansonParameters).\footnote{See our R script here: github link.}
+
+```{r swansonParameters, fig.cap='Distribution of parameters in our biased sensitivity model, from a bootstrapped sample of MHG and MG variables in Swanson (N=10,000).', fig.height=4}
+SwansonParameterEst_plot
+```
+
+Most of this range of biased sensitivity, where $\beta>0$ and MGs tend to be more correctly detected at higher levels of social complexity, is sufficient to generate a spurious positive association between MGs and social complexity levels.
+
+To demonstrate this, imagine that we could have a randomly generated "population" of, say, $10\,000$ cultures. In this hypothetical world, there `r round(pr_mg*100, digits=1)`% of the cultures have a MG present (the percentage of Swanson's cultures with a MG), and there is objectively no relationship between presence vs. absence of MGs and social complexity, measured along five levels. Suppose we then sample 186 cultures from this population and observe false negatives from our biased sensitivity model, where $P(\text{false negative}) = \text{logit}^{-1}(\alpha+\beta \times SC)$.\footnote{Similar to above, $SC$ is the level of social complexity and $\alpha$ and $\beta$ are the intercept and slope parameters, respectively, from the biased sensitivity inferred from the Swanson (1964) dataset} We can simulate this process many times ($N=10\,000$ simulation runs), each time comparing the estimate from a logistic regression model based on perfect sensitivity -- where gods present are always accurately detected -- vs. a logistic regression model based on our observations with biased false negatives. Perfect sensitivity unsurprisingly reflects the reality in our larger population (there is no relationship between social complexity and MGs). Our biased sensitivity model, however, reliably generates positive, "statistically significant" associations between social complexity and MGs (figure \@ref(fig:biasedSimulation1)).
+
+```{r biasedSimuation1, fig.cap='Distributions of estimates from logistic regression models of MGs as a function of social complexity, in a simulation where no relationship actually exists (N=10,000). Perfect sensitivity correctly infers no relationship (the purple distribution of estimates). Biased sensitivity, applying the average parameters from our bootstrap of the Swanson data to our biased sensitivity model, reliably generates a positive relationship (the orange distribution of estimates).', fig.height=3}
+biasedSimulation_Plot1
+```
+
+```{r biasedP1}
+#fig.cap='Density of distributions of p-values from logistic regression models of MGs as a function of social complexity, in a simulation where no relationship actually exists (N=10,000). In contrast to perfect sensitivity and its uniform distribution (purple), the distribution of p-values resulting from biased sensitivity, which applies the average parameters from our bootstrap of the Swanson data, reliably favors "statistically significant" results.', fig.height=5, fig.width=9
+#biasedP_Plot1
+#and \@ref(fig:biasedP1)
+```
+
+This simple exercise, which uses the available data on MGs and MHGs from Swanson (1964), shows that when we conceptualize the classification of MHGs in the data as error-prone attempts at detecting MGs in the cross-cultural data, we find a distribution of false negatives that can systematically favor a positive association between MGs and social complexity, even if none exists. Nevertheless, this proof of concept alone is not compelling, because the Swanson data is also a noisy and relatively small sample. The parameter distribution in figure \@ref(fig:swansonParameters) is wide, and for simplicity, our simulation exercise was based on the average bias parameter, $\beta$ from figure \@ref(fig:compareSwansonMods) to generate false negatives in the simulation. It remains uncertain whether or not the simulation we have shown here actually captures the reality of the data-generating process in the MHG data. Perhaps our model, based on Swanson's data, overestimates the biased sensitivity of MG detection along social complexity levels as it exists in the SCCS.
+
+As we will argue next, additional sources of bias in the data-generating process of the SCCS would have further contributed to generating a spurious association between MGs and social complexity. If anything, our biased sensitivity model likely \emph{under}estimates the bias, $\beta$, that we inferred from Swanson's data.
+
+```{r paramPlot}
+# Relative to the parameters estimated from Swanson's data on MGs vs. MHGs, increasing the bias in our biased sensitivity model ($\beta$) increases the prospect of generating a spurious correlation between MGs and social complexity, and vice versa when decreasing the bias (figure \@ref(fig:paramPlot)). Our original estimates from the simulation in figures \@ref(fig:biasedSimulation1) and \@ref(fig:biasedP1) are based on a comparison of the variables in Swanson (1964), which, a...
+# fig.cap='Distributions of estimates in the biased sensitivity simulations as a function of bias (left panel) and observed parameters, i.e., possible intercepts and biases (right panel). Note that increasing the bias only strengthens the prospect of generating a positive association between social complexity and MGs.'
+#fnrBiasModels2 + paramSpace_plot
+```
+
+\section{Biased false negatives in imperialist and missionary reports}\label{missionaries}
+
+The debate about whether or not traditional populations lack MGs likely developed not as a scientific pursuit, but an imperial one in the form of missionization. Much of our knowledge or past traditional populations, including the sources that populate databases like the SCCS, come from missionaries and explorers who, in some cases, had explicitly biased their observations against the idea that moralizing religions could exist in small-scale societies.
+
+[BGP section 3.1 on imperialist and missionary reports could go about here.]
+
+Anthropologists during this time period had, in some cases, notably documented reams of evidence supporting the idea that traditional societies had religions. @tylorPrimitiveCultureResearches1871, for example, extensively critiqued the idea that traditional, small-scale societies did not have religions, and developed his animistic theory of religion. Nevertheless, he simply dismisses the idea that small-scale religious traditions could have been moralistic in any way:
+
+> One great element of religion, that moral element which among the higher nations forms its most vital part, is indeed little represented in the religion of the lower races. It is not that these races have no moral sense or no moral standard, for both are strongly marked among them, if not in formal precept, at least in that traditional consensus of society which we call public opinion, according to which certain actions are held to be good or bad, right or wrong. It is that the conjunction of ethics and animistic philosophy, so intimate and powerful in the higher culture, seems scarcely yet to have begun in the lower (Tylor 1871/1920, p. 427).
+
+This rebuttal was an improvement on the prevailing assumption that small-scale societies had no religions. And yet, both sides of this debate stood in firm agreement in assuming that traditional small-scale societies had no MGs. This assumption was questioned a century later, when @evans-pritchardTheoriesPrimitiveReligion1965 characterized the idea that traditional populations lack morally concerned gods as a myth. What revealed this sentiment as a myth was the effort of anthropologists who had conducted fieldwork among traditional populations. Anticipating what remains a common retort, Evans-Pritchard dismisses the presumption that simpler societies must have had to learn whatever moral elements in their religion from missionaries as "condescending" (Evans-Pritchard 1965; Hartland 1898; Lang 1909).
+
+Among the sources used to code the MHG variable in the SCCS, `r sccsPre1965_percent`% (`r sccsPre1965` out of `r sccsyearCount` societies with data on the presence of MHGs) are from \emph{before} Evans-Pritchard's defense of morally concerned gods among small-scale societies in 1965. The median year of these sources is 1920, and the vast majority (about 95%) of sources were from pre-`r sccsyear95` (figure \@ref(fig:sccsYearPlot)). Almost all of the data in the SCCS is therefore subject to the observational biases that prevailed during Tylor's time and beforehand, though it is worth noting that some, such as Malinowski, contested the idea that gods in small-scale societies lack moralistic concerns (for discussion, see Purzycki and McKay, forthcoming).
+
+```{r sccsYearPlot, fig.cap='Empirical cumulative distribution function of the year of authorship for the records that code presence/absence of MHGs in the SCCS. For reference, the vertical lines highlight the years 1871 (the year Tylor first disputed the prevailing assumption that small-scale societies had no religions at all, shown to the left) and 1965 (the year Evans-Pritchard disputed the continuing trend of social scientists claiming that the gods of small-scale societies are not moralistic, shown to the right).', fig.height=3}
+YearEcdf_Plot
+```
+
+Hence, while it might be true that this prevailing view about MGs in small-scale societies did not shape all the ethnographies on which the SCCS high gods variable is based, there is good reason to assume that in many cases, it did. Not only would this have systematically underestimated the prevalence of MGs in the ethnographic record (figure \@ref(fig:comparedatasets)), but this biased sensitivity along social complexity levels, as we demonstrated with a simple model and simulation, reliably generates a positive association between morally punitive gods and levels of social complexity.
+
+\section{Moralizing gods in future research}
+
+```{r}
+source('Bendixen et al data.R')
+```
+
+Many theories about the evolution of religion, such as the Big Gods narrative that we highlighted at the outset of this article, take as their premise that morally punitive gods are positively associated with large-scale societies. The evidence for this is, in large part, often based on analyses of cross-cultural and ethnographic data in the SCCS. The available measure that these studies use (presence/absence of MHGs) is meant to detect a theoretical construct that is frequently used interchangeably with Big Gods, but is unavailable in the SCCS (presence/absence of MGs).
+
+We reviewed the coding criteria used for MHGs, and argued that these criteria systematically filter out MGs that are truly present. Specifically, is we assume that MHGs are a useful proxy measure for MGs, then the coding criteria for MHGs in the SCCS creates many false negatives because it includes a theoretically irrelevant filtering criteria: whether or not a deity is a creator deity, regardless of its omniscience, omnipotence, or its scope of concerns. This problem of false negatives is consistent with the observation that supernatural punishers are widespread in the ethnographic literature, including among small-scale hunter-gatherer societies [@boehm2008biocultural].
+
+In Swanson's smaller dataset that includes both MHGs and MGs, we find that this problem of false negatives (MHGs are "absent," but MGs are "present") occurs non-randomly along levels of social complexity, such that cultures with low complexity were more likely to contain MHGs coded as "absent" and MGs coded as "present." This bias, if it applies to the SCCS, would have likely suggested a spurious association between Big Gods and social complexity, but how likely this occurred for the SCCS depends on \emph{how biased} these false negatives were in the data-generating process. We used a simple model and the available data from Swanson (1964) to approximate this bias, and to show that it can reliably generate a positive association between MGs and social complexity (even when no such association actually exists). Swanson's dataset is relatively small and gives us a noisy inference to simulate from, but as we argued in section \ref{missionaries}, a review of the historical context in which the SCCS data were originally generated suggests that our assessment likely \emph{underestimates} this bias.
+
+```{r bendixenPlot, fig.cap='Heatmap showing the presence (light cells) and absence (dark cells) of god concerns among eight cultures. Each column is a participant, and each rows is a domains that the participant responses were coded on. Data from Bendixen et al. (2021).', fig.show="hold", out.width="50%"}
+
+pheatmap(BG_panel, color = viridis::inferno(20),
+             treeheight_col = 0, treeheight_row = 0,
+             legend=FALSE,
+             main='Big Gods')
+
+pheatmap(LG_panel, color = viridis::inferno(20),
+           treeheight_col = 0, treeheight_row = 0,
+           legend=FALSE,
+           main='Local Gods')
+
+
+
+#BG_panel / LG_panel
+```
+
+
+Given the arguments presented here, we question the prevailing assumption that a cross-cultural and historical association exists between punitive MGs and social complexity. While it can be beneficial to reject a misleading assumption, this is only the first step going forward. Cross-cultural ethnographic work relying not on coding ethnographers' observations, but on actively asking participants to provide descriptions of their moralizing gods, has only recently begun [e.g., @bendixenAppealingMindsGods2021; @langMoralizingGodsImpartiality2019; @purzyckiMoralisticGodsSupernatural2016; @singhSmallGodsRituals2021]. 
+
+In individual-level data collected across eight cultures by @purzyckiMoralisticGodsSupernatural2016, many people claimed that moralizing gods were concerned about interpersonal behavior, among a wide range of other social and ecological domains of concern [see also @bendixenAppealingMindsGods2021]. The domains of these gods' concerns tend to vary among the gods designated as "big gods" and "local gods" -- a distinction whose usefulness might vary in different cultural contexts (Placek and Lightner 2022) -- and they also vary among different gods we find in different socioecological contexts (figure \@ref(fig:bendixenPlot); see also @purzyckiEcologicalTheoryGods2016). Importantly, the participants in Purzycki et al. also usually claimed to believe in supernatural punishment, regardless of how "big" the gods in question were (`r bgpun`% believed in punitive big gods, and `r lgpun`% believed in punitive local gods).
+
+
+Questions surrounding supernatural punishers have come a long way since questions about their existence throughout much of the early twentieth century. As evidence accumulates in support of their cross-cultural existence, contra Tylor and his contemporary critics, it is imperative that we also reassess the cross-cultural datasets whose formation was shaped by outdated theories [@bendixenCulturalEvolutionReligion2021; @bendixenPeeringMindsGods2020; @lightnerGameTheoreticalAspects2021]. Ethnographic work is needed now more than ever, but it must be informed going forward by theories that are not burdened by centuries-old sets of assumptions.
+
+
+\section*{Acknowledgements}
+
+All authors thank the Aarhus University Research Foundation for support.
+
+\section*{References}
