@@ -36,7 +36,6 @@
 \IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
 \IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
 \hypersetup{
-  pdftitle={Moralizing high gods in cross-cultural datasets systematically underestimate the evidence for supernatural punishment},
   pdfauthor={Indigenous Religions Lab, feat. Ryan McKay},
   hidelinks,
   pdfcreator={LaTeX via pandoc}}
@@ -93,7 +92,7 @@
 \newcommand{\CSLRightInline}[1]{\parbox[t]{\linewidth - \csllabelwidth}{#1}\break}
 \newcommand{\CSLIndent}[1]{\hspace{\cslhangindent}#1}
 
-\title{Moralizing high gods in cross-cultural datasets systematically underestimate the evidence for supernatural punishment}
+\title{\textbf{Moralizing high gods in cross-cultural datasets systematically underestimate the evidence for supernatural punishment}}
 \author{Indigenous Religions Lab, feat. Ryan McKay}
 \date{}
 
@@ -189,7 +188,7 @@ This biased sensitivity in our ability to detect MGs will clearly, to some exten
 
 Most of this range of biased sensitivity, where \(\beta>0\) and MGs tend to be more correctly detected at higher levels of social complexity, is sufficient to generate a spurious positive association between MGs and social complexity levels.
 
-To demonstrate this, imagine that we could have a randomly generated ``population'' of, say, \(10\,000\) cultures. In this hypothetical world, there 74.5\% of the cultures have a MG present (the percentage of Swanson's cultures with a MG), and there is objectively no relationship between presence vs.~absence of MGs and social complexity, measured along five levels. Suppose we then sample 186 cultures from this population and observe false negatives from our biased sensitivity model, where \(P(\text{false negative}) = \text{logit}^{-1}(\alpha+\beta \times SC)\).\footnote{Similar to above, $SC$ is the level of social complexity and $\alpha$ and $\beta$ are the intercept and slope parameters, respectively, from the biased sensitivity inferred from the Swanson (1964) dataset} We can simulate this process many times (\(N=10\,000\) simulation runs), each time comparing the estimate from a logistic regression model based on perfect sensitivity -- where gods present are always accurately detected -- vs.~a logistic regression model based on our observations with biased false negatives. Perfect sensitivity unsurprisingly reflects the reality in our larger population (there is no relationship between social complexity and MGs). Our biased sensitivity model, however, reliably generates positive, ``statistically significant'' associations between social complexity and MGs (figure \ref{fig:biasedSimulation1}).
+To demonstrate this, imagine that we could have a randomly generated ``population'' of, say, \(10\,000\) cultures. In this hypothetical world, there 74.5\% of the cultures have a MG present (the percentage of Swanson's cultures with a MG), and there is objectively no relationship between presence vs.~absence of MGs and social complexity, measured along five levels. Suppose we then sample 186 cultures from this population and observe false negatives from our biased sensitivity model, where \(P(\text{false negative}) = \text{logit}^{-1}(\alpha+\beta \times SC)\).\footnote{Similar to above, $SC$ is the level of social complexity and $\alpha$ and $\beta$ are the intercept and slope parameters, respectively, from the biased sensitivity inferred from the Swanson (1964) dataset} We can simulate this process many times (\(N=10\,000\) simulation runs), each time comparing the estimate from a logistic regression model based on perfect sensitivity -- where gods present are always accurately detected -- vs.~a logistic regression model based on our observations with biased false negatives. Perfect sensitivity unsurprisingly reflects the reality in our larger population (there is no relationship between social complexity and MGs). Our biased sensitivity model, however, reliably generates positive, ``statistically significant'' associations between social complexity and MGs (figure \ref{fig:biasedSimuation1}).
 
 \begin{figure}
 \centering

@@ -18,7 +18,6 @@ scdf <- read.csv('sccs/data.csv',
 cdvar <- vars %>% dplyr::select(var_id=id, category, title, type)
 scdf <- scdf %>% left_join(cdvar, by='var_id')
 
-# var_list2 <- cdvar$var_id[cdvar$type=='Ordinal' | cdvar$type=='Continuous']
 var_list2 <- c('SCCS238',  # High God
                'SCCS237',  # Society "Size"; NOTE: Jurisdictional hierarchy beyond local community
                'SCCS1122'  # Log10 of total pop. size
@@ -73,26 +72,9 @@ YearEcdf_Plot <-
   stat_ecdf() +
   theme_bw() +
   labs(x='\nYear', y='') +
-  xlim(c(1500,2000)) +
+  xlim(c(1500,2000)) +         # truncated for readability, but goes back to < year 0
   geom_vline(xintercept=1965, linetype=2, alpha=0.5) +
   geom_vline(xintercept=1871, linetype=2, alpha=0.5)
-
-
-# #YearEcdf_Plot <- 
-#   sccs %>% 
-#   as_tibble() %>% 
-#   left_join(
-#     tibble(scdf[scdf$var_id=='SCCS238',]) %>% 
-#       dplyr::select(society=soc_id, year),
-#     by='society'
-#   ) %>% 
-#   ggplot(aes(x=year)) + 
-#   stat_ecdf() +
-#   theme_bw() +
-#   labs(x='\nYear', y='') +
-#   xlim(c(0,2000)) +
-#   geom_vline(xintercept=1965, linetype=2, alpha=0.5) +
-#   geom_vline(xintercept=1871, linetype=2, alpha=0.5)
 
 
 # Swanson -----------------------------------------------------------------
@@ -191,23 +173,6 @@ standardMHGcount <- sccs %>%
   theme_classic() +
   labs(x='\nJurisdictional hierarchy', y='Number of MHGs present or absent\n', fill='')
 
-# MOSAIC PLOT?
-# sccs %>% 
-#   group_by(juris_levels) %>% 
-#   summarise(
-#     present=sum(high_gods==1, na.rm=TRUE),
-#     absent=sum(high_gods==0, na.rm=TRUE)
-#   ) %>% 
-#   filter(!is.na(juris_levels)) %>% 
-#   pivot_longer(-juris_levels, names_to='pres_abs') %>% 
-#   group_by(juris_levels) %>%
-#   mutate(ind=row_number()-1,
-#          ind=abs(ind-1)) %>% 
-#   summarise(value2=sum(value),
-#             mean2=sum(value*ind)/value2) %>% 
-#   ggplot() +
-#   geom_mosaic(aes(weight=mean2, x=product(juris_levels), conds=value2))
-
 # Evaluating false negatives in the literature ----------------------------
 
 source('comparedatasets.R')
@@ -217,6 +182,8 @@ source('comparedatasets.R')
 
 source('fnr-random-simulation.R')
 
+
+## NOTE: The plots below this point have now been removed from the paper because they are overkill, IMO
 
 # Increasingly biased simulations -----------------------------------------
 
@@ -265,10 +232,6 @@ fnrBiasModels2 <-
   geom_ribbon(aes(ymin=estimate-2*sd, ymax=estimate+2*sd),
               fill='gray', alpha=0.3) +
   labs(x='\nBias', y='Estimates\n')
-
-# 
-# md <- tibble(est0, int0, p0,
-#              est1, int1, p1)
 
 
 

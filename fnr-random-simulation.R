@@ -30,11 +30,6 @@ d$bin <- as.numeric(
     d$moral_other
 ) 
 
-
-# Put that barchart here!!!
-# tab1 <- prop.table(table(d$high_gods, d$size),2)
-# tab2 <- prop.table(table(d$bin, d$size_labels), 2)
-
 tabz <- rbind(
   prop.table(table(d$highgods, d$sovorg),2)[2,],
   prop.table(table(d$bin, d$sovorg), 2)[2,]
@@ -75,17 +70,14 @@ dat <- rbind(dat, data.frame(size=1:6,
                              Freq=dat$Freq[dat$type=='MG']-dat$Freq[dat$type=='MHG'],
                              type='MG - MHG'))
 
-## REALLY SHOULD add some error to this plot!!!!!
+
 swanson_plot_JurisCompare <- 
   ggplot(dat, aes(x=size, y=Freq*100)) +
   geom_bar(stat='identity', position='dodge', aes(fill=type), colour='black', width=0.8) +
   theme_classic() +
   labs(x='\nSociety size', y='% gods present\n', fill='') +
     scale_fill_viridis_d()
-    # scale_fill_manual(values=c(viridis::magma(11)[8], 
-    #                            viridis::magma(11)[4]))
-  #scale_fill_manual(values=c('black', 'lightgray')) # +
-# ggtitle('Cross-cultural presence of moralistic gods\n')   # optional title
+
 
 swanson_plot_JurisCounts <- 
   d %>% 
@@ -118,28 +110,6 @@ swanson_plot_JurisCounts <-
   scale_fill_manual(values=c(viridis::magma(11)[4],
                              viridis::magma(11)[8]))
 
-## THIS IS THE ONE THAT SHOULD REPLACE THE OTHER!!!!!
-
-
-
-# swanson <- d %>% 
-#   dplyr::select(
-#     society,
-#     high_gods=highgods,
-#     moral_gods=bin,
-#     juris_levels = sovorg,   # V12 in the Swanson dataset
-#     size
-#   ) %>% 
-#   add_column(dataset='Swanson (1960)')
-
-# d <- swanson
-# d %>% 
-#   group_by(juris_levels) %>% 
-#   summarise(
-#     #diff=1 - (mean(moral_gods, na.rm=TRUE) - mean(high_gods, na.rm=TRUE))
-#     diff=moral_gods-high_gods
-#   )
-# d$high_gods[is.na(d$high_gods)] <- 0
 
 d <- d %>% 
   dplyr::select(
@@ -153,17 +123,11 @@ d <- d %>%
 d$misses <- d$moral_gods-d$high_gods
 d$hits <- (d$misses-1)*-1    # this col is the true positives
 
-# tm <- glm(hits ~ juris_levels, data=d, family='binomial')
-# visreg::visreg(tm, scale='response')
-# summary(glm(hits ~ juris_levels, data=d, family='binomial'))
 
 d <- d %>% 
   dplyr::select(juris_levels, hits)
 d <- d[complete.cases(d),]
 
-# d %>% 
-#   group_by(juris_levels) %>% 
-#   summarise(mean(hits))
 
 sim_runs <- 1e4
 est_intercept <- rep(NA, sim_runs)
@@ -175,7 +139,6 @@ for(i in 1:sim_runs) {
   est_slope[i] <- m0[2]
 }
 
-#mean_swanslope <- mean(est_slope)
 
 SwansonParameterEst_plot <- 
   tibble(`$\\alpha$`=est_intercept,
@@ -191,18 +154,6 @@ SwansonParameterEst_plot <-
   theme(legend.position = 'none') +
     geom_vline(xintercept=0, linetype=2, alpha=0.5) +
   xlim(c(-5,3))
-
-# plot(NULL, xlim=c(1,6), ylim=c(0,1), xlab='Social complexity', ylab='Prop. MG - MHG')
-# for(i in sample(sim_runs, 500)) lines(1:6, est_slope[i] + 1:6*est_slope[i], col=alpha(rgb(0,0,0), 0.25))
-# plot(NA, xlab = 'Slope across complexity levels', ylab = "", 
-#      xlim = c(-1, 2), 
-#      ylim = c(0, 1.5), 
-#      cex.lab = 1.3, yaxt = 'n')
-# polygon(density(est_slope), col='gray')
-
-# if you simulate within range of estslope and estintercept, remember to use common index every time
-
-
 
 # Alternative approach: Assume randomness, validate sample ----------------
 
@@ -320,35 +271,4 @@ biasedSimulation_Plot1 <-
 
 # Next steps: simulate this process, to show that it *generally* increases the correlation
 # What's the right model, given the estimated sensitivity (diff from false negative rate)? -- might find from swanson a rough estimate
-
-
-
-# lurking third variable? missionary status, or publication date? probably not; if anything, the opposite seems to hold
-
-# Data artifact?
-# sampling weights higher on lower sc
-
-
-# Providing a corrected estimate based on FN rate -------------------------
-
-# nobs = 1000
-# t_prob <- 0.45
-# 
-# dk <- tibble(x=rbinom(nobs, 1, 0.5))
-# dk$y <- as.numeric(runif(nobs)<=invlogit(t_prob*dk$x))
-# summary(glm(y ~ x, data=dk, family='binomial'))
-# 
-# fnr <- 0.18
-# fpr <- 0.05
-# 
-# dk$obs_y <- dk$y
-# dk$obs_y[dk$obs_y==0][runif(nobs-sum(dk$obs_y)) <= fpr] <- 1
-# dk$obs_y[dk$obs_y==1][runif(sum(dk$obs_y)) <= fnr] <- 0
-# 
-# summary(glm(obs_y ~ x, data=dk, family='binomial'))
-# 
-# tmp <- table(dk$obs_y, dk$y)
-# 
-# a1 <- 0.5 + 0.5*sqrt((nobs-2*(tmp[1,2]+tmp[2,1])) / nobs)
-# 
 

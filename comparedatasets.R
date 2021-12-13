@@ -14,7 +14,6 @@ scdf <- read.csv('sccs/data.csv',
 cdvar <- vars %>% dplyr::select(var_id=id, category, title, type)
 scdf <- scdf %>% left_join(cdvar, by='var_id')
 
-# var_list2 <- cdvar$var_id[cdvar$type=='Ordinal' | cdvar$type=='Continuous']
 var_list2 <- c('SCCS238'  # High God
                # 'SCCS237',  # Society "Size"; NOTE: Jurisdictional hierarchy beyond local community
                # 'SCCS798',  # Date of publication
@@ -61,13 +60,6 @@ d <-
   mutate(
     across(size:moral_other, as.numeric))    # converting characters to numeric
 
-# d$size_labels <- NA
-# d$size_labels[d$size==0] <- "1-49"
-# d$size_labels[d$size==1] <- "50-399"
-# d$size_labels[d$size==2] <- "400-9999"
-# d$size_labels[d$size==3] <- "10000+"
-# d$size_labels <- factor(d$size_labels, levels=c('1-49', '50-399', '400-9999', '10000+'))
-
 d$highgods[d$highgods==4] <- NA   
 d$highgods <- as.numeric(d$highgods==3)    # high gods concerned about morality?
 
@@ -106,10 +98,6 @@ d <- ang %>% dplyr::select(
   # stress=stress2   # NOTE: Part A's stress2 != stress mean used in Part B
 ) %>% as_tibble()
 
-# sum(d$highgod_punish, na.rm = TRUE)
-# sum(d$supgod_punish, na.rm = TRUE)
-# sum(d$spirits_punish, na.rm = TRUE)
-
 d$id[is.na(d$id)] <- 99   # This appears to be a mistake in the original, but should check on it
 
 d$uid <- 1:nrow(d)
@@ -125,14 +113,6 @@ tmp$allNA <- rowSums(is.na(tmp))==(ncol(tmp)-1)
 tmp <- tmp[tmp$allNA==FALSE,]
 tmp <- tmp %>% replace(is.na(.), 0)
 tmp$moral_punitive <- as.numeric(tmp$highgod_punish | tmp$supgod_punish | tmp$spirits_punish)
-
-# d$highgod_punish[is.na(d$highgod_punish)] <- 0     # yes, I know that AE!=EA and my anayses won't imply otherwise
-# d$supgod_punish[is.na(d$supgod_punish)] <- 0
-# d$spirits_punish[is.na(d$spirits_punish)] <- 0
-
-## d$moral_punitive <- as.numeric(d$highgod_punish | d$supgod_punish | d$spirits_punish)
-# d$moral_count <- as.numeric(d$highgod_punish + d$supgod_punish + d$spirits_punish)
-
 
 #' S3_Resolved_IA_TR: "Is food shared outside the typical household frequently during certain
 #' seasons in ways different than the daily sharing of food?" (0) No, including inferred no; (1) Yes
@@ -189,19 +169,6 @@ d$moral_gods <-
   rowSums(na.rm=TRUE)
 d$moral_gods <- as.numeric(d$moral_gods>0)
 
-# sort(table(d$PolID))   # remove duplicates?
-# Might be better (more conservative) to use regions?
-
-# d <- d %>% 
-#   select(
-#     region = NGA,
-#     primary:agency
-#   ) %>% 
-#   replace(is.na(.), 0) %>%
-#   mutate(sum = rowSums(across(where(is.numeric)))) %>% 
-#   group_by(region) %>% 
-#   summarise(present = as.numeric(mean(sum) > 0))
-
 seshat <- d %>%
   add_column(high_gods = NA) %>% 
   dplyr::select(
@@ -215,7 +182,6 @@ seshat <- d %>%
 # Boehm -------------------------------------------------------------------
 
 d <- read_excel('data/Boehm supernatural punishment.xlsx') %>% replace(is.na(.), 0)
-# hagenutils::hagenheat(d %>% select(where(is.numeric)) %>% t(), seriation_method = 'PCA_angle')
 
 d$moral_gods <- as.numeric(rowSums(d %>% select(deviance:jealousy)) > 0 )
 
