@@ -1,3 +1,4 @@
+rm(list = ls())
 library(tidyverse)
 library(readxl)
 library(data.table)
@@ -125,22 +126,54 @@ swan_mg <- glm(moral_gods ~ juris_levels, data=swanson, family='binomial')
 sccs_highPlot <- 
   visreg::visreg(sccs_mhg, scale='response', rug=FALSE, gg=TRUE) +
   ylim(c(0,1)) +
-  theme_classic(base_size = 14) +
+  theme_classic(base_size = 16) +
   labs(x='\nJurisdictional hierarchy', y='Moralizing High Gods\n') +
-  ggtitle('Standard Cross-Cultural Sample')
+  ggtitle('A     Standard Cross-Cultural Sample') +
+    theme(plot.title = element_text(size = 18, face = "bold"))
 
 swan_highPlot <- 
   visreg::visreg(swan_mhg, scale='response', rug=FALSE, gg=TRUE) +
   ylim(c(0,1)) +
-  theme_classic(base_size = 14) +
-  labs(x='\nJurisdictional hierarchy', y='')
+  theme_classic(base_size = 16) +
+  ggtitle("B     Swanson (1964)") +
+  labs(x='\nJurisdictional hierarchy', y='') +
+  theme(plot.title = element_text(size = 18, face = "bold"))
 # ggtitle('Swanson (1964) dataset')
+
+
+sccs_highPlot + 
+  swan_highPlot +
+  theme(
+    axis.text.y=element_blank(),
+    axis.ticks.y =element_blank(),
+    axis.title.y = element_blank()
+  )
+
 
 swan_moralPlot <- 
   visreg::visreg(swan_mg, scale='response', rug=FALSE, gg=TRUE) +
   ylim(c(0,1)) +
-  theme_classic(base_size = 14) +
-  labs(x='\nJurisdictional hierarchy', y='')
+  theme_classic(base_size = 16) +
+  labs(x='\nJurisdictional hierarchy', y='') +
+  theme(plot.title = element_text(size = 18, face = "bold"))
+
+
+(swan_highPlot + ggtitle('A     Moralizing High Gods')) +
+  (swan_moralPlot + ggtitle('B     Moralizing Gods')) +
+  theme(
+    axis.text.y=element_blank(),
+    axis.ticks.y =element_blank(),
+    axis.title.y = element_blank()
+  )
+
+# (swan_highPlot + ggtitle('Moralizing High Gods')) +
+#   (swan_moralPlot + ggtitle('Moralizing Gods')) +
+#   theme(
+#     axis.text.y=element_blank(),
+#     axis.ticks.y =element_blank(),
+#     axis.title.y = element_blank()
+#   ) +
+#   plot_annotation(tag_levels = 'A')
 
 
 # Standard barplot --------------------------------------------------------
@@ -156,7 +189,25 @@ standardMHGplot <-
   labs(x='\nJurisdictional hierarchy', y='Proportion of cultures with MHG\n') +
   ylim(c(0,1))
 
-standardMHGcount <- sccs %>% 
+standardMHGplot2 <- 
+  sccs %>%
+  group_by(juris_levels) %>%
+  summarise(mhg=mean(high_gods, na.rm=TRUE)) %>%
+  filter(!is.na(juris_levels)) %>%
+  ggplot(aes(x=juris_levels, y=mhg)) +
+  geom_bar(stat='identity', fill='darkslategray', width=0.8, colour='black') +
+  labs(x = '', y='') +
+  # labs(x='\nJurisdictional hierarchies', y='Proportion of cultures with MHG\n') +
+  # ylim(c(0,1)) +
+    geom_hline(yintercept = 0) +
+  theme_classic(16) +
+    ggtitle("Proportions") +
+    theme(plot.title = element_text(size = 18, face = "bold"))
+  
+  
+
+standardMHGcount <- 
+  sccs %>% 
   group_by(juris_levels) %>% 
   summarise(
     present=sum(high_gods==1, na.rm=TRUE),
@@ -165,13 +216,33 @@ standardMHGcount <- sccs %>%
   filter(!is.na(juris_levels)) %>% 
   pivot_longer(-juris_levels, names_to='pres_abs') %>% 
   ggplot(aes(x=juris_levels, y=value, fill=pres_abs)) +
-  geom_bar(stat='identity', position='dodge') +
-  scale_fill_manual(
-    values=c(viridis::magma(11)[4], viridis::magma(11)[8]),
-    guide=guide_legend(reverse=TRUE)
-  ) +
-  theme_classic() +
-  labs(x='\nJurisdictional hierarchy', y='Number of MHGs present or absent\n', fill='')
+  geom_bar(stat='identity', position='dodge', colour="black") +
+    scale_fill_manual(
+      values = c("#440154FF", "#228B22"),
+      # values = c("#29AF7FFF", "#440154FF"),
+                      guide = guide_legend(reverse = TRUE)) +
+    # scale_fill_manual( values = c("black", "lightgray"),
+    #                    guide = guide_legend(reverse = TRUE)) +
+  # scale_fill_manual(
+  #   values=c(viridis::magma(11)[4], viridis::magma(11)[8]),
+  #   guide=guide_legend(reverse=TRUE)
+  # ) +
+  theme_classic(16) +
+    geom_hline(yintercept = 0) +
+    labs(x='', y='', fill='') +
+    ggtitle("Counts") +
+    theme(legend.position = c(0.8,0.8),
+          legend.background = element_rect(size=0.25, linetype=1, 
+                                           colour ="black"),
+          legend.direction = "horizontal",
+          plot.title = element_text(size = 18, face = "bold")) +
+  labs(x = "\nJurisdictional hierarchies")
+  # labs(x='\nJurisdictional hierarchy', y='Number of MHGs present or absent\n', fill='')
+
+
+standardMHGplot2 / standardMHGcount
+
+
 
 # Evaluating false negatives in the literature ----------------------------
 

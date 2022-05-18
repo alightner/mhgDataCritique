@@ -240,11 +240,16 @@ dat$lower <- dat$average - 2*dat$se
 dat$upper[dat$dataset=='Boehm (2008)'] <- as.numeric(prop.test(sum(boehm$moral_gods), length(boehm$moral_gods))$conf)[2]
 dat$lower[dat$dataset=='Boehm (2008)'] <- as.numeric(prop.test(sum(boehm$moral_gods), length(boehm$moral_gods))$conf)[1]
 
-compare_dataplot <- ggplot(dat, aes(x=dataset, y=average, shape=gods)) +
+compare_dataplot <- 
+  ggplot(dat, aes(x=dataset, y=average, shape=gods)) +
   geom_point(position=position_dodge(width=0.15), size=3) +
   geom_errorbar(aes(ymin=lower, ymax=upper), position=position_dodge(width=0.15), width=0.15, alpha=0.5) +
   ylim(c(0,1)) +
+    theme_classic(base_size = 16) +
+    theme(legend.position = c(0.75,0.1),
+          legend.background = element_rect(size=0.25, linetype=1,
+                                           colour ="black"),
+          legend.direction = "horizontal") +
   scale_shape_manual(values=c(1,19)) +
   labs(x='', y='\nProportion', shape = '') +
-  coord_flip() +
-  theme_classic(base_size = 14)
+  coord_flip()

@@ -79,7 +79,7 @@ swanson_plot_JurisCompare <-
     scale_fill_viridis_d()
 
 
-swanson_plot_JurisCounts <- 
+#swanson_plot_JurisCounts <- 
   d %>% 
   dplyr::select(juris_levels=sovorg,
                 high_gods=highgods,
@@ -104,11 +104,17 @@ swanson_plot_JurisCounts <-
   ) %>% 
   ggplot(aes(x=juris_levels, y=counts)) +
   geom_bar(stat='identity', position='dodge', aes(fill=fct_rev(factor(present))), colour='black', width=0.8) +
-  theme_classic() +
+  theme_classic(16) +
   facet_grid(~gods) +
   labs(x='Jurisdictional levels', y='', fill='') +
-  scale_fill_manual(values=c(viridis::magma(11)[4],
-                             viridis::magma(11)[8]))
+  scale_fill_manual(
+    values = c("#440154FF", "#228B22")
+    # values=c(viridis::magma(11)[4],viridis::magma(11)[8])
+                    ) +
+    theme(legend.position = c(0.15,0.9),
+          legend.background = element_rect(size=0.25, linetype=1, 
+                                           colour ="black"),
+          legend.direction = "horizontal")  # 7 x 10 pdf
 
 
 d <- d %>% 
@@ -140,18 +146,23 @@ for(i in 1:sim_runs) {
 }
 
 
-SwansonParameterEst_plot <- 
+#SwansonParameterEst_plot <- 
   tibble(`$\\alpha$`=est_intercept,
        `$\\beta$`=est_slope) %>% 
   pivot_longer(cols=everything(), names_to='param', values_to='estimate') %>% 
   ggplot(aes(x=estimate, y=param, fill=param)) +
   ggdist::stat_halfeye(alpha=0.7) +
-  theme_bw(base_size = 14) +
-  labs(x='\nEstimate', y='', fill='Parameter') +
-  scale_fill_manual(values=c(viridis::magma(11)[4],
-                             viridis::magma(11)[8])) +
+  theme_classic(base_size = 16) +
+  labs(x='Estimate', y='', fill='Parameter') +
+    scale_fill_manual(values = c("#440154FF", "#228B22")) +
+    scale_colour_manual(values = c("#440154FF", "#228B22")) +
+  # scale_fill_manual(values=c(viridis::magma(11)[4],
+  #                            viridis::magma(11)[8])) +
   scale_y_discrete(labels = function(x) latex2exp::TeX(x)) +
   theme(legend.position = 'none') +
+    geom_hline(yintercept=1) +
+    geom_hline(yintercept = 2) +
+    coord_cartesian(ylim=c(1.5,2.35)) +
     geom_vline(xintercept=0, linetype=2, alpha=0.5) +
   xlim(c(-5,3))
 
@@ -227,32 +238,45 @@ biasedP_Plot1 <-
   # annotate(geom='text', hjust=0, x=-0.5, y=1.77, label='Biased sensitivity', size=4)
 
 
-biasedSimulation_Plot1 <-
+#biasedSimulation_Plot1 <-
   tibble(`$\\beta$`=c(md$est0, md$est1),
        int=c(md$int0, md$int1),
        p=c(md$p0, md$p1),
+       # errtreat = c(rep('Perfect\nsensitivity', length(md$est0)),
+       #              rep('Biased\nsensitivity', length(md$est1)))
        errtreat=c(rep('accurate', length(md$est0)),
-                  rep('error-treated', length(md$est1)))) %>% 
+                  rep('error-treated', length(md$est1)))
+       ) %>% 
   pivot_longer(-errtreat) %>% 
   filter(name!='p' & name!='int') %>% 
   ggplot(aes(x=value, y=name, fill=factor(errtreat))) +
   ggdist::stat_halfeye(alpha=0.6) +
-  theme_bw(base_size = 14) +
-  scale_colour_viridis_d() +
-  scale_fill_viridis_d() +
-  labs(x='\nEstimate', y='', fill='Parameter') +
-  scale_fill_manual(values=c(viridis::magma(11)[4],
-                             viridis::magma(11)[8])) +
-  scale_colour_manual(values=c(viridis::magma(11)[4],
-                               viridis::magma(11)[8])) +
+  #theme_ggdist() +
+    theme_classic(base_size = 16) +
+    geom_hline(yintercept = 1) +
+  # scale_colour_viridis_d() +
+  # scale_fill_viridis_d() +
+  labs(x="Estimate", y="", fill="") +
+    scale_fill_manual(values = c("#440154FF", "#228B22")) +
+    scale_colour_manual(values = c("#440154FF", "#228B22")) +
+    # labs(x='\nEstimate', y='', fill='Parameter') +
+  # scale_fill_manual(values=c(viridis::magma(11)[4],
+  #                            viridis::magma(11)[8])) +
+  # scale_colour_manual(values=c(viridis::magma(11)[4],
+  #                              viridis::magma(11)[8])) +
   scale_y_discrete(labels = function(x) latex2exp::TeX(x)) +
   geom_vline(xintercept=0, linetype=2, alpha=0.5) +
+    # theme(legend.position = c(0.1,0.9),
+    #       legend.background = element_rect(size=0.25, linetype=1, 
+    #                                        colour ="black"),
+    #       legend.direction = "horizontal")
   theme(legend.position = 'none') +
-  annotate(geom='rect', xmin=-0.55, xmax=-0.25, ymin=1.69, ymax=1.93, fill='white', colour='black') +
-  annotate(geom='point', x=-0.52, y=1.77, size=3, colour='#F76F5CFF') +
-  annotate(geom='text', hjust=0, x=-0.5, y=1.87, label='Perfect sensitivity', size=3) +
-  annotate(geom='point', x=-0.52, y=1.87, size=3, colour='#641A80FF') +
-  annotate(geom='text', hjust=0, x=-0.5, y=1.77, label='Biased sensitivity', size=3)
+    coord_cartesian(ylim=c(1.5,1.6)) +
+  annotate(geom='rect', xmin=-0.55, xmax=-0.185, ymin=1.69, ymax=1.93, fill='white', colour='black') +
+  annotate(geom='point', x=-0.52, y=1.77, size=3, colour='#228B22') +
+  annotate(geom='text', hjust=0, x=-0.5, y=1.87, label='Perfect sensitivity', size=5) +
+  annotate(geom='point', x=-0.52, y=1.87, size=3, colour='#440154FF') +
+  annotate(geom='text', hjust=0, x=-0.5, y=1.77, label='Biased sensitivity', size=5)
 
 
 # ggdist with p1 vs. p0 as colors?
